@@ -3,15 +3,16 @@ const dbConnect = require('./config/dbConnect');
 const app = express();
 const dotenv = require('dotenv').config();
 const PORT = process.env.PORT || 7000;
+const authRouter = require("./routes/authRoutes");
+const bodyParser = require('body-parser');
+const { notFound, errorHandler } = require('./middlewares/errorHandler');
+dbConnect();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/api/user', authRouter);
 
-app.get('/', (req, res) => {
-  res.send('Hello from server side...');
-});
-
+app.use(notFound);
+app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server is Running at PORT ${PORT}`);
 });
-
-dbConnect();
-
-// Move the dbConnect function into the same file
